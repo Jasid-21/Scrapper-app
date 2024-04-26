@@ -1,0 +1,29 @@
+@import './variables';
+
+@mixin button-style($color: $primary) {
+  background-color: transparent;
+  color: $color;
+  border-radius: 4px;
+  border: 2px solid $color;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 180ms ease;
+
+  &:hover {
+    background-color: $color;
+    color: #fff;
+  }
+}
+
+@mixin input-style($color: $d_accent, $bg-color: $primary) {
+  outline: none;
+  color: $color;
+  background-color: lighten($color: $bg-color, $amount: 50%);
+  border-radius: 8px;
+  border: 1px solid $primary;
+  font-style: italic;
+
+  &::placeholder {
+    color: $color;
+  }
+}
