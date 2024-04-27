@@ -3,7 +3,6 @@
     <span>Url:</span>
     <form @submit.prevent="fetchPage">
       <input type="text" placeholder="Navigate to" v-model="url">
-      &nbsp;
       <button type="submit">Go!</button>
     </form>
   </nav>
@@ -41,8 +40,14 @@ const fetchPage = () => {
   align-items: center;
   column-gap: 0.3rem;
 
+  form {
+    display: flex;
+    column-gap: 0.3rem;
+  }
+
   input {
     @include input-style($d_accent, rgba($color: $primary, $alpha: 0.3));
+    border-radius: 4px;
     width: 230px;
     padding: 0.2rem;
   }

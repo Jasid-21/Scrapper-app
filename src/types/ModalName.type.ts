@@ -1,2 +1,2 @@
-type ModalName = 'create-model';
+type ModalName = 'create-model' | 'inspect-model';
 export default ModalName;

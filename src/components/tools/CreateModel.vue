@@ -1,5 +1,5 @@
 <template>
-  <SidenavItem name="Model" icon="fa-solid fa-sitemap" :click-cb="click">
+  <SidenavItem name="Model" icon="fa-solid fa-sitemap" @clicked="openModal">
   </SidenavItem>
 </template>
 
@@ -9,7 +9,7 @@ import { useModalsStore } from '@/stores/modals';
 
 const modalsStore = useModalsStore();
 
-const click = (ev: MouseEvent) => {
+const openModal = () => {
   modalsStore.addPairedModal('create-model', [true]);
 }
 </script>

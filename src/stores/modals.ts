@@ -10,12 +10,17 @@ export const useModalsStore = defineStore('modals', {
   getters: {
     activeModals(): PairedModal[] {
       return this.paired_modals.filter(m => !m.slots.some(s => s === undefined) && m.show);
-    }
+    },
   },
 
   actions: {
-    closeModals() {
-      this.paired_modals = [];
+    closeModals(modals: ModalName[] = []) {
+      if (!modals.length) {
+        this.paired_modals = [];
+        return;
+      }
+
+      modals.forEach(m => this.paired_modals = this.paired_modals.filter(pm => pm.modal != m));
     },
 
     addPairedModal(modal: ModalName, slots: any[] = []) {

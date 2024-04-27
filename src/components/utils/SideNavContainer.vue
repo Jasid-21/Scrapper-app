@@ -5,7 +5,8 @@
         <span class="title">Models</span>
       </template>
       <template #content>
-        <SidenavItem v-for="i of models" :icon="'fa-solid fa-sitemap'" :name="'Item'">
+        <SidenavItem v-for="i of models" :icon="'fa-solid fa-sitemap'"
+          :name="i.name" @clicked="openModelModal(i.name)">
         </SidenavItem>
       </template>
     </SideNavLayout>
@@ -36,14 +37,21 @@ import { computed, ref } from 'vue';
 import SideNavLayout from './SideNavLayout.vue';
 import SidenavItem from '../SidenavItem.vue';
 import { useModelsStore } from '@/stores/models';
+import { useModalsStore } from '@/stores/modals';
 import CreateModel from '../tools/CreateModel.vue';
 
-const modelsStore = useModelsStore()
+const modelsStore = useModelsStore();
+const modalsStore = useModalsStore();
 const models = computed(() => modelsStore.models);
 type NavName = 'models' | 'tools';
 const nav = ref<NavName | undefined>(undefined);
 
 const setActiveNav = (v?: NavName) => nav.value = v;
+const openModelModal = (name: string) => {
+  const model = models.value.find(m => m.name == name);
+  if (!model) return;
+  modalsStore.addPairedModal('inspect-model', [model]);
+}
 </script>
 
 <style scoped lang="scss">

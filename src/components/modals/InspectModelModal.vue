@@ -1,9 +1,8 @@
 <template>
-  <GeneralModal :modal="'create-model'">
+  <GeneralModal :modal="'inspect-model'" @loaded="loadModel">
     <template #header>
-      <span>Create Model</span>
+      <span class="title">{{ modal?.slots[0]?.name }}</span>
     </template>
-
     <template #content>
       <div class="modal-content">
         <form class="element-form" @submit.prevent="addElement">
@@ -50,13 +49,13 @@
         <div class="save-schema-container">
           <form class="save-form" @submit.prevent="saveModel">
             <div class="input">
-              <div class="title"><span>Save as</span></div>
+              <div class="title"><span>Copy as</span></div>
               <input type="text" placeholder="schema name" v-model="model_name">
             </div>
 
             <div class="btns-continer">
               <button class="save-btn" type="submit">
-                <fai icon="fa-solid fa-save"></fai>
+                <fai icon="fa-solid fa-copy"></fai>
               </button>
             </div>
           </form>
@@ -67,14 +66,26 @@
 </template>
 
 <script setup lang="ts">
+import { computed, ref, watch } from 'vue';
 import GeneralModal from './GeneralModal.vue';
+import { useModalsStore } from '@/stores/modals';
+import { PairedModal } from '@/stores/interfaces/modalsState.interface';
 import { useModelModal } from '@/composbles/ModelModal';
+
+const modalsStore = useModalsStore();
+const paired_modals = computed(() => modalsStore.paired_modals);
+
+const filterPaired = (paired: PairedModal[]) => paired.find(m => m.modal == 'inspect-model');
+const modal = ref<PairedModal | undefined>(filterPaired(modalsStore.paired_modals));
+watch(paired_modals, v => modal.value = filterPaired(modalsStore.paired_modals), { deep: true });
+const loadModel = () => modal.value = filterPaired(modalsStore.paired_modals);
+
 const {
   element, elements, model_name,
   getters, chosen_getter,
   default_getter, addElement,
-  removeElement, saveModel
-} = useModelModal();
+  removeElement, saveModel,
+} = useModelModal(modal.value?.slots[0]);
 </script>
 
 <style scoped lang="scss">

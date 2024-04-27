@@ -9,6 +9,10 @@
   cursor: pointer;
   transition: all 180ms ease;
 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   &:hover {
     background-color: $color;
     color: #fff;

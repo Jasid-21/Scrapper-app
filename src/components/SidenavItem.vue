@@ -1,20 +1,16 @@
 <template>
-  <div class="sidenav-item" @click="click">
+  <div class="sidenav-item" @click="emit('clicked')">
     <span class="title">{{ name }}</span>
     <fai :icon="icon"></fai>
   </div>
 </template>
 
 <script setup lang="ts">
+const emit = defineEmits<{ (e: 'clicked'): void }>();
 const props = defineProps<{
   name: string;
   icon: string;
-  clickCb?: (ev: MouseEvent, ...params: any) => any;
 }>();
-
-const click = (ev: MouseEvent) => {
-  if (props.clickCb) props.clickCb(ev);
-}
 </script>
 
 <style scoped lang="scss">
