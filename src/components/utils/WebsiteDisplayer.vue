@@ -1,5 +1,5 @@
 <template>
-  <iframe ref="iframe" class="website-displayer"
+  <iframe ref="iframe" id="website-displayer"class="website-displayer"
     frameborder="0">
   </iframe>
 </template>
@@ -23,6 +23,9 @@ watch(content, v => {
   iframe.value.contentWindow?.document.open();
   iframe.value.contentWindow?.document.write(v);
   iframe.value.contentWindow?.document.close();
+
+  const doc = iframe.value.contentWindow?.document;
+  if (doc) website.setIframeDoc(doc);
 
   nextTick(() => {
     if (!iframe.value) return;

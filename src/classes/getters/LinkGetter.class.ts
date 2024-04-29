@@ -5,8 +5,7 @@ export default class LinkGetter extends PrimaryGetter {
     super('Link', 'fa-solid fa-link');
   }
 
-  run(el: Element): string {
-    if (!(el instanceof HTMLElement)) return '';
-    return el.getAttribute('href') || '';
+  getContent(el: Element) {
+    return el.getAttribute('data-href') || '';
   }
 }

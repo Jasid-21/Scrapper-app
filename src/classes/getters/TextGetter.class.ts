@@ -5,8 +5,7 @@ export default class TextGetter extends PrimaryGetter {
     super('Text', 'fa-solid fa-font');
   }
 
-  run(el: Element): string {
-    if (!(el instanceof Element)) return '';
+  getContent(el: Element): string {
     return el.textContent || '';
   }
 }

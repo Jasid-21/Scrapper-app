@@ -7,9 +7,15 @@ export const useWebsiteStore = defineStore('website', {
     base_url: '',
     content: '',
     styles: [],
+    iframe_document: undefined,
   }),
 
   actions: {
+    setIframeDoc(document: Document) {
+      if (!(document instanceof Document)) return;
+      this.iframe_document = document;
+    },
+
     setContent(content: string) {
       if (typeof content != 'string') return;
       this.content = content;

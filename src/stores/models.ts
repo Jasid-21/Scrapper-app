@@ -7,6 +7,7 @@ import LinkGetter from "@/classes/getters/LinkGetter.class";
 import ImgGetter from "@/classes/getters/ImgGetter.class";
 import { ComposeAlert } from "@/services/FireAlert.service";
 import { useAdvicesStore } from "./advices";
+import SelectElements from "@/services/SelectElements.service";
 
 export const useModelsStore = defineStore('models', {
   state: (): ModelsState => ({
@@ -17,7 +18,7 @@ export const useModelsStore = defineStore('models', {
     ],
 
     models: [
-      new Model('Main'),
+      new Model('Main', []),
     ],
 
     training: undefined,
@@ -43,18 +44,37 @@ export const useModelsStore = defineStore('models', {
   },
 
   actions: {
-    trainProerty(selector: string) {
+    async trainProerty(selector: string) {
       if (!this.training) return;
       const model = this.trainingModel;
       if (!model) return;
       
+      const iframe = document.querySelector('iframe#website-displayer') as HTMLIFrameElement | null;
+      const els = SelectElements(selector, iframe?.contentWindow?.document);
+      if (!els) {
+        ComposeAlert('No elements were found. This may be an internal system error');
+        return;
+      }
+
       const property = model.nextProperty;
-      model.trainProperty(property, selector);
+      let multiple = false;
+      console.log(els.length);
+      if (els.length > 1) {
+        const mult = await ComposeAlert(
+          `We've found ${els.length} elements. If you click "ok" you'll keep them all.
+          Otherwise only the first will be selected`,
+          'info', true
+        );
+        if (mult.isConfirmed) multiple = true;
+      }
+      
+      model.trainProperty(property, selector, multiple);
       console.log(model);
       const next = model.nextProperty;
       if (!next) {
         ComposeAlert('Model trained', 'success');
         useAdvicesStore().closeAdvice();
+        this.training = undefined;
         return;
       }
       const msg = `Click element to train "${next}" property`;

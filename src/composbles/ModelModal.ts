@@ -43,6 +43,7 @@ export function useModelModal(inspect: boolean) {
       value: undefined,
       selector: undefined,
       getter: e.getter as GetterName,
+      multiple: false,
     })));
     
     if (!model) return;

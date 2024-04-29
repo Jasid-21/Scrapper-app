@@ -5,8 +5,7 @@ export default class ImgGetter extends PrimaryGetter {
     super('Img', 'fa-solid fa-image');
   }
 
-  run(el: Element): string {
-    if (!(el instanceof HTMLImageElement)) return '';
-    return el.src || '';
+  getContent(el: Element) {
+    return el.getAttribute('src') || '';
   }
 }

@@ -4,8 +4,8 @@ import PrimaryGetter from "@/classes/getters/PrimaryGetter.class";
 import TextGetter from "@/classes/getters/TextGetter.class";
 import GetterName from "@/types/GetterName.type";
 
-export const getters: Record<GetterName, typeof PrimaryGetter> = {
-  Text: TextGetter,
-  Img: ImgGetter,
-  Link: LinkGetter,
+export const getters: Record<GetterName, PrimaryGetter> = {
+  Text: new TextGetter(),
+  Img: new ImgGetter(),
+  Link: new LinkGetter(),
 };

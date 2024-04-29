@@ -5,8 +5,4 @@ export default class PrimaryGetter extends BaseGetter {
   constructor(name: GetterName | string, icon: string) {
     super(name, icon);
   }
-
-  run(el: Element): any {
-    return;
-  }
 }

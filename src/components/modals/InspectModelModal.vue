@@ -120,7 +120,9 @@ const startTraining = () => {
 }
 
 const runModel = () => {
-
+  if (!model.value) return;
+  if (!model.value.trained) return;
+  model.value.run();
 }
 </script>
 
