@@ -60,6 +60,16 @@
             </div>
           </form>
         </div>
+
+        <div class="buttons-container">
+          <button class="start-training-btn" @click="startTraining">
+            Start training
+          </button>
+          <button class="run-model-btn" @click="runModel">
+            Run
+          </button>
+          <button class="delete-model-b">Delete</button>
+        </div>
       </div>
     </template>
   </GeneralModal>
@@ -69,23 +79,49 @@
 import { computed, ref, watch } from 'vue';
 import GeneralModal from './GeneralModal.vue';
 import { useModalsStore } from '@/stores/modals';
-import { PairedModal } from '@/stores/interfaces/modalsState.interface';
+import { useModelsStore } from '@/stores/models';
 import { useModelModal } from '@/composbles/ModelModal';
+import { useWebsiteStore } from '@/stores/website';
+import { PairedModal } from '@/stores/interfaces/modalsState.interface';
+import { ComposeAlert } from '@/services/FireAlert.service';
 
 const modalsStore = useModalsStore();
 const paired_modals = computed(() => modalsStore.paired_modals);
 
 const filterPaired = (paired: PairedModal[]) => paired.find(m => m.modal == 'inspect-model');
 const modal = ref<PairedModal | undefined>(filterPaired(modalsStore.paired_modals));
-watch(paired_modals, v => modal.value = filterPaired(modalsStore.paired_modals), { deep: true });
-const loadModel = () => modal.value = filterPaired(modalsStore.paired_modals);
+watch(paired_modals, v => modal.value = filterPaired(v), { deep: true });
+const loadModel = () => modal.value = filterPaired(paired_modals.value);
 
 const {
   element, elements, model_name,
-  getters, chosen_getter,
+  getters, chosen_getter, model,
   default_getter, addElement,
   removeElement, saveModel,
-} = useModelModal(modal.value?.slots[0]);
+} = useModelModal(true);
+
+const modelsStore = useModelsStore();
+const website = useWebsiteStore();
+const web_content = computed(() => website.content);
+
+const startTraining = () => {
+  if (!web_content.value) {
+    ComposeAlert('Request a website before start a training');
+    return;
+  }
+  
+  if (!model.value) return;
+  if (!model.value.raw_properties.length) {
+    ComposeAlert('Add some properties/elements before start a trining');
+    return;
+  }
+  modelsStore.startTraining(model.value.name);
+  modalsStore.closeModals();
+}
+
+const runModel = () => {
+
+}
 </script>
 
 <style scoped lang="scss">

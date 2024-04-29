@@ -31,7 +31,6 @@ export const useModalsStore = defineStore('modals', {
       }
 
       this.paired_modals.push(new_modal);
-      console.log(this.paired_modals);
     }
   }
 });

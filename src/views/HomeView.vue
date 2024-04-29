@@ -5,6 +5,7 @@
     <Teleport to="#utils">
       <WorkspaceNav></WorkspaceNav>
       <SideNavContainer></SideNavContainer>
+      <AdviceDisplayer></AdviceDisplayer>
     </Teleport>
 
     <Teleport to="#modals">
@@ -18,4 +19,5 @@ import WebsiteDisplayer from '@/components/utils/WebsiteDisplayer.vue';
 import WorkspaceNav from '@/components/utils/WorkspaceNav.vue';
 import SideNavContainer from '@/components/utils/SideNavContainer.vue';
 import ModalsDisplayer from '@/components/modals/ModalsDisplayer.vue';
+import AdviceDisplayer from '@/components/utils/AdviceDisplayer.vue';
 </script>

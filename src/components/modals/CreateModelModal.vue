@@ -74,7 +74,7 @@ const {
   getters, chosen_getter,
   default_getter, addElement,
   removeElement, saveModel
-} = useModelModal();
+} = useModelModal(false);
 </script>
 
 <style scoped lang="scss">

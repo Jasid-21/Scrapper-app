@@ -1,20 +1,28 @@
-import { computed, ref, watch } from 'vue';
+import { Ref, computed, ref, watch } from 'vue';
 import { useModelsStore } from '@/stores/models';
+import { useModalsStore } from '@/stores/modals';
 import { ComposeAlert } from '@/services/FireAlert.service';
 import GetterName from '@/types/GetterName.type';
 import Model from '@/classes/getters/Model.class';
 
-export function useModelModal(model?: Model) {
+export function useModelModal(inspect: boolean) {
   const modelsStore = useModelsStore();
+  const modalsStore = useModalsStore();
+  const model = computed((): Model | undefined => {
+    if (!inspect) return;
+    const m = modalsStore.paired_modals.find(m => m.modal == 'inspect-model')?.slots[0];
+    console.log(m);
+    return m;
+  });
   const getters = computed(() => modelsStore.getters);
 
   const default_getter = '__none__';
   const model_name = ref<string>('');
   const element = ref<string>('');
-  const elements = ref<{ name: string, getter: string }[]>(model?.raw_properties || []);
+  const elements = ref<{ name: string, getter: string }[]>(model.value?.raw_properties || []);
   const chosen_getter = ref<string>(default_getter);
 
-  watch(getters, v => chosen_getter.value = v[0] || default_getter);
+  watch(getters, v => chosen_getter.value = default_getter);
   watch(chosen_getter, v => {
     if (v == default_getter) return;
 
@@ -30,15 +38,15 @@ export function useModelModal(model?: Model) {
       return;
     }
 
-    const pass = await modelsStore.createModel(name, elements.value.map(e => ({
+    const model = await modelsStore.createModel(name, elements.value.map(e => ({
       name: e.name,
       value: undefined,
       selector: undefined,
       getter: e.getter as GetterName,
     })));
     
-    if (!pass) return;
-    ComposeAlert('Model created successfully', 'success');
+    if (!model) return;
+    modalsStore.addPairedModal('inspect-model', [model]);
   }
 
   const addElement = async () => {
@@ -73,7 +81,7 @@ export function useModelModal(model?: Model) {
   }
 
   return {
-    element, elements,
+    model, element, elements,
     getters, default_getter,
     chosen_getter, model_name,
     saveModel, addElement,

@@ -22,6 +22,10 @@ export default class Model extends BaseGetter {
     this.raw_properties = properties;
   }
 
+  get trained(): boolean {
+    return !this.raw_properties.some(p => p.selector == '');
+  }
+
   get nextProperty(): string {
     return this.raw_properties.find(p => !p.selector)?.name || '';
   }

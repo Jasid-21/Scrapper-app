@@ -6,6 +6,7 @@ import TextGetter from "@/classes/getters/TextGetter.class";
 import LinkGetter from "@/classes/getters/LinkGetter.class";
 import ImgGetter from "@/classes/getters/ImgGetter.class";
 import { ComposeAlert } from "@/services/FireAlert.service";
+import { useAdvicesStore } from "./advices";
 
 export const useModelsStore = defineStore('models', {
   state: (): ModelsState => ({
@@ -14,12 +15,25 @@ export const useModelsStore = defineStore('models', {
       new LinkGetter(),
       new ImgGetter(),
     ],
+
     models: [
       new Model('Main'),
     ],
+
+    training: undefined,
   }),
 
   getters: {
+    trainingModel(): Model | undefined {
+      return this.models.find(m => m.name === this.training);
+    },
+
+    trainingProperty(): string | undefined {
+      if (!this.training) return;
+      const model = this.trainingModel;
+      return model?.nextProperty;
+    },
+
     getters(): string[] {
       return [
         ...this.default_getters.map(g => g.name),
@@ -29,21 +43,53 @@ export const useModelsStore = defineStore('models', {
   },
 
   actions: {
-    async createModel(name: string, properties: RawProperty[] = []): Promise<boolean> {
+    trainProerty(selector: string) {
+      if (!this.training) return;
+      const model = this.trainingModel;
+      if (!model) return;
+      
+      const property = model.nextProperty;
+      model.trainProperty(property, selector);
+      console.log(model);
+      const next = model.nextProperty;
+      if (!next) {
+        ComposeAlert('Model trained', 'success');
+        useAdvicesStore().closeAdvice();
+        return;
+      }
+      const msg = `Click element to train "${next}" property`;
+      useAdvicesStore().setMessage(msg);
+    },
+
+    startTraining(model: Model | string) {
+      if (typeof model === 'string') {
+        const m = this.models.find(m => m.name == model);
+        if (!m) return;
+        model = m;
+      }
+
+      const next = model.nextProperty;
+      if (!next) return;
+      this.training = model.name;
+      const msg = `Click element to train "${next}" property`;
+      useAdvicesStore().setMessage(msg);
+    },
+
+    async createModel(name: string, properties: RawProperty[] = []): Promise<Model | undefined> {
       const exist = this.models.findIndex(m => m.name == name);
       if (exist >= 0) {
         const pass = await ComposeAlert(
           `There is a moden of name "". Do you want to overwrite it?`,
           'warning', true,
         );
-        if (pass.isDismissed) return false;
+        if (pass.isDismissed) return;
         this.models[exist] = new Model(name, properties);
-        return true;
+        return this.models[exist];
       }
 
       const model = new Model(name, properties);
       this.models.push(model);
-      return true;
+      return model;
     },
   }
 });

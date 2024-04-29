@@ -39,5 +39,6 @@ const closeAll = async () => {
   display: flex;
   justify-content: center;
   align-items: center;
+  column-gap: 1rem;
 }
 </style>

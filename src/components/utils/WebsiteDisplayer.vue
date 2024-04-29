@@ -1,16 +1,22 @@
 <template>
-  <iframe ref="iframe" class="website-displayer" frameborder="0"></iframe>
+  <iframe ref="iframe" class="website-displayer"
+    frameborder="0">
+  </iframe>
 </template>
 
 <script setup lang="ts">
 import HandleHref from '@/services/HandleHref.service';
 import { useWebsiteStore } from '@/stores/website';
+import { useModelsStore } from '@/stores/models';
 import { computed, nextTick, ref, watch } from 'vue';
+import ComposeSelector from '@/services/ComposeSelector.service';
 
-const iframe = ref<HTMLIFrameElement>();
 const website = useWebsiteStore();
+const modelsStore = useModelsStore();
+const training = computed(() => modelsStore.training);
 const styles = computed(() => website.styles.map(s => `<style>${s}</style>`));
 const content = computed(() => website.content);
+const iframe = ref<HTMLIFrameElement>();
 
 watch(content, v => {
   if (!iframe.value) return;
@@ -20,24 +26,34 @@ watch(content, v => {
 
   nextTick(() => {
     if (!iframe.value) return;
+    const context = iframe.value?.contentWindow?.document;
 
     const style_tags = styles.value.map(s => {
       const style = document.createElement('style');
       style.innerHTML = s;
       return style;
     });
-    style_tags.forEach(s => iframe.value?.contentWindow?.document.head.appendChild(s));
+    style_tags.forEach(s => context?.head.appendChild(s));
     const sel_styles = document.createElement('style');
     sel_styles.innerHTML = `
       .xvx_focused {
         box-shadow: 0 0 4px 2px purple !important;
       }
     `;
-    iframe.value.contentWindow?.document.body.appendChild(sel_styles);
+    context?.body.appendChild(sel_styles);
 
-    const els = iframe.value.contentWindow?.document.querySelectorAll('*');
+    const els = context?.querySelectorAll('*');
     if (!els) return;
     els.forEach(el => {
+      el.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        if (!training.value) return;
+        const selector = ComposeSelector(el);
+        console.log(selector);
+        
+        modelsStore.trainProerty(selector);
+      });
+
       el.addEventListener('mouseover', (ev) => {
         ev.stopPropagation();
         el.classList.add('xvx_focused');
@@ -55,6 +71,13 @@ watch(content, v => {
 
 <style scoped lang="scss">
 iframe.website-displayer {
+  width: 100vw;
+  height: 100vh;
+}
+
+.iframe-mask {
+  position: absolute;
+  top: 0; left: 0;
   width: 100vw;
   height: 100vh;
 }
