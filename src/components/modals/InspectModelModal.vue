@@ -84,6 +84,7 @@ import { useModelModal } from '@/composbles/ModelModal';
 import { useWebsiteStore } from '@/stores/website';
 import { PairedModal } from '@/stores/interfaces/modalsState.interface';
 import { ComposeAlert } from '@/services/FireAlert.service';
+import { GetMainContext } from '@/services/SelectElements.service';
 
 const modalsStore = useModalsStore();
 const paired_modals = computed(() => modalsStore.paired_modals);
@@ -122,7 +123,10 @@ const startTraining = () => {
 const runModel = () => {
   if (!model.value) return;
   if (!model.value.trained) return;
-  model.value.run();
+  const ctx = GetMainContext()?.querySelector('body');
+  if (!ctx) return;
+  const response = model.value.run([ctx]);
+  console.log(response);
 }
 </script>
 

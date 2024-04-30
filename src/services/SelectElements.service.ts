@@ -3,13 +3,13 @@ export function GetMainContext(): Document | undefined {
   return iframe?.contentWindow?.document || undefined;
 }
 
-export default function SelectElements(selector: string, doc?: Document):
+export default function SelectElements(selector: string, ctx?: Element):
   NodeListOf<Element> |  undefined {
-  if (!doc) doc = GetMainContext();
-  if (!doc) return;
+  if (!ctx) ctx = GetMainContext()?.querySelector('body') || undefined;
+  if (!ctx) return;
   let els: NodeListOf<Element> | undefined = undefined;
   try {
-    els = doc.querySelectorAll(selector);
+    els = ctx.querySelectorAll(selector);
   } catch (err) {
     return undefined;
   }

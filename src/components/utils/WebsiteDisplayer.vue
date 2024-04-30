@@ -10,9 +10,11 @@ import { useWebsiteStore } from '@/stores/website';
 import { useModelsStore } from '@/stores/models';
 import { computed, nextTick, ref, watch } from 'vue';
 import ComposeSelector from '@/services/ComposeSelector.service';
+import { ComposeAlert } from '@/services/FireAlert.service';
 
 const website = useWebsiteStore();
 const modelsStore = useModelsStore();
+const training_model = computed(() => modelsStore.trainingModel);
 const training = computed(() => modelsStore.training);
 const styles = computed(() => website.styles.map(s => `<style>${s}</style>`));
 const content = computed(() => website.content);
@@ -50,11 +52,15 @@ watch(content, v => {
     els.forEach(el => {
       el.addEventListener('click', (ev) => {
         ev.stopPropagation();
-        if (!training.value) return;
+        if (!training.value || !training_model.value) return;
         const selector = ComposeSelector(el);
         console.log(selector);
-        
-        modelsStore.trainProerty(selector);
+        if (!training_model.value.train_context) {
+          modelsStore.setTrainingContext(selector);
+          return;
+        }
+      
+        modelsStore.trainProerty(el);
       });
 
       el.addEventListener('mouseover', (ev) => {
