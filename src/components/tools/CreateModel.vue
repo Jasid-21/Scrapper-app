@@ -1,5 +1,5 @@
 <template>
-  <SidenavItem name="Model" icon="fa-solid fa-sitemap" @clicked="openModal">
+  <SidenavItem name="New" icon="fa-solid fa-plus" @clicked="openModal">
   </SidenavItem>
 </template>
 

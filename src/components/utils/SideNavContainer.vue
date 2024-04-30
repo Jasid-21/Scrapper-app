@@ -1,33 +1,27 @@
 <template>
   <div class="sidenav-container">
-    <SideNavLayout @close-navs="setActiveNav()" :active="nav == 'models'">
-      <template #header>
-        <span class="title">Models</span>
-      </template>
-      <template #content>
-        <SidenavItem v-for="i of models" :icon="'fa-solid fa-sitemap'"
-          :name="i.name" @clicked="openModelModal(i.name)">
-        </SidenavItem>
-      </template>
-    </SideNavLayout>
-    <SideNavLayout @close-navs="setActiveNav()" :active="nav == 'tools'">
+    <ModelsSidenav :active="nav == 'models'" @close-navs="setActiveNav()">
+    </ModelsSidenav>
+    <!--
+    <SideNavLayout :active="nav == 'tools'" @close-navs="setActiveNav()">
       <template #header>
         <span class="title">Tools</span>
       </template>
 
-      <template #content>
-        <CreateModel></CreateModel>
-      </template>
+      <template #content></template>
     </SideNavLayout>
+    -->
 
     <div class="buttons-container" v-if="!nav">
       <button class="models-btn" @click="setActiveNav('models')">
         <fai icon="fa-solid fa-sitemap"></fai>
       </button>
+      <!--
       <br>
       <button class="tools-btn" @click="setActiveNav('tools')">
         <fai icon="fa-solid fa-toolbox"></fai>
       </button>
+      -->
     </div>
   </div>
 </template>
@@ -39,6 +33,7 @@ import SidenavItem from '../SidenavItem.vue';
 import { useModelsStore } from '@/stores/models';
 import { useModalsStore } from '@/stores/modals';
 import CreateModel from '../tools/CreateModel.vue';
+import ModelsSidenav from './ModelsSidenav.vue';
 
 const modelsStore = useModelsStore();
 const modalsStore = useModalsStore();

@@ -1,4 +1,4 @@
-import { Ref, computed, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useModelsStore } from '@/stores/models';
 import { useModalsStore } from '@/stores/modals';
 import { ComposeAlert } from '@/services/FireAlert.service';
@@ -8,12 +8,15 @@ import Model from '@/classes/getters/Model.class';
 export function useModelModal(inspect: boolean) {
   const modelsStore = useModelsStore();
   const modalsStore = useModalsStore();
-  const model = computed((): Model | undefined => {
+  const model = ref<Model | undefined>();
+  watch(modalsStore.paired_modals, v => {
+    console.log({ ...v });
     if (!inspect) return;
-    const m = modalsStore.paired_modals.find(m => m.modal == 'inspect-model')?.slots[0];
+    const m = v.find(m => m.modal == 'inspect-model')?.slots[0];
     console.log(m);
-    return m;
-  });
+    model.value = m;
+  }, { deep: true });
+
   const getters = computed(() => modelsStore.getters);
 
   const default_getter = '__none__';
@@ -21,15 +24,6 @@ export function useModelModal(inspect: boolean) {
   const element = ref<string>('');
   const elements = ref<{ name: string, getter: string }[]>(model.value?.raw_properties || []);
   const chosen_getter = ref<string>(default_getter);
-
-  watch(getters, v => chosen_getter.value = default_getter);
-  watch(chosen_getter, v => {
-    if (v == default_getter) return;
-
-    const name = element.value;
-    if (!name.trim()) return;
-    addElement();
-  });
 
   const saveModel = async () => {
     const name = model_name.value;

@@ -67,6 +67,7 @@
 </template>
 
 <script setup lang="ts">
+import { watch } from 'vue';
 import GeneralModal from './GeneralModal.vue';
 import { useModelModal } from '@/composbles/ModelModal';
 const {
@@ -75,6 +76,14 @@ const {
   default_getter, addElement,
   removeElement, saveModel
 } = useModelModal(false);
+watch(getters, v => chosen_getter.value = default_getter);
+watch(chosen_getter, v => {
+  if (v == default_getter) return;
+
+  const name = element.value;
+  if (!name.trim()) return;
+  addElement();
+});
 </script>
 
 <style scoped lang="scss">

@@ -34,7 +34,7 @@
               <th>Getter</th>
               <th></th>
             </tr>
-            <tr class="element" v-for="e of elements">
+            <tr class="element" v-for="e of model?.raw_properties">
               <td class="element-name">{{ e.name }}</td>
               <td class="element-selector">{{ e.getter }}</td>
               <td class="options">
@@ -85,21 +85,37 @@ import { useWebsiteStore } from '@/stores/website';
 import { PairedModal } from '@/stores/interfaces/modalsState.interface';
 import { ComposeAlert } from '@/services/FireAlert.service';
 import { GetMainContext } from '@/services/SelectElements.service';
+import Model from '@/classes/getters/Model.class';
+import GetterName from '@/types/GetterName.type';
 
 const modalsStore = useModalsStore();
-const paired_modals = computed(() => modalsStore.paired_modals);
-
-const filterPaired = (paired: PairedModal[]) => paired.find(m => m.modal == 'inspect-model');
-const modal = ref<PairedModal | undefined>(filterPaired(modalsStore.paired_modals));
-watch(paired_modals, v => modal.value = filterPaired(v), { deep: true });
-const loadModel = () => modal.value = filterPaired(paired_modals.value);
+const modal = ref<PairedModal | undefined>();
+watch(modal, v => console.log("Inspect:", v));
 
 const {
-  element, elements, model_name,
-  getters, chosen_getter, model,
-  default_getter, addElement,
+  element, model_name,
+  getters, chosen_getter,
+  default_getter, model,
   removeElement, saveModel,
 } = useModelModal(true);
+const loadModel = (paired: PairedModal) => {
+  console.log({ ...paired });
+  model.value = paired.slots[0];
+  modal.value = paired;
+}
+
+watch(getters, v => chosen_getter.value = default_getter);
+watch(chosen_getter, v => {
+  console.log(v);
+  if (v == default_getter) return;
+
+  const name = element.value;
+  if (!name.trim()) return;
+  addElement();
+});
+const addElement = () => {
+  model.value?.setRawProperty(element.value, chosen_getter.value as GetterName);
+}
 
 const modelsStore = useModelsStore();
 const website = useWebsiteStore();
@@ -256,6 +272,16 @@ const runModel = () => {
           background-color: #fff;
         }
       }
+    }
+  }
+
+  .buttons-container {
+    display: flex;
+    justify-content: center;
+    column-gap: 0.3rem;
+
+    button {
+      @include button-style();
     }
   }
 }

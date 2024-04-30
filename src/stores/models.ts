@@ -66,8 +66,9 @@ export const useModelsStore = defineStore('models', {
       useAdvicesStore().setMessage(msg);
     },
 
-    setTrainingContext(selector: string) {
-      this.trainingModel?.setTrainingContext(selector);
+    async setTrainingContext(selector: string) {
+      const pass = await this.trainingModel?.setTrainingContext(selector);
+      if (!pass) return;
       const next = this.trainingModel?.nextProperty;
       if (!next) return;
       

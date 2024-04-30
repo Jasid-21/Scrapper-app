@@ -36,7 +36,11 @@ export default class Model extends BaseGetter {
     return this.raw_properties.find(p => !p.selector)?.name || '';
   }
 
-  set rawProperty(prop: RawProperty) {
+  setRawProperty(name: string, getter: GetterName) {
+    const prop: RawProperty = {
+      name, getter, selector: undefined,
+      value: undefined, multiple: false,
+    }
     this.raw_properties.push(prop);
   }
 
@@ -99,22 +103,32 @@ export default class Model extends BaseGetter {
     return true;
   }
 
-  setTrainingContext(selector: string) {
+  async setTrainingContext(selector: string): Promise<boolean> {
     if (!selector) {
       this.train_context = null;
-      return;
+      return false;
     }
 
     const main = GetMainContext();
-    if (!main) return;
-    let context: Element | null;
+    if (!main) return false;
+    let context: Element | null = null;
     try {
+      const ctx  = main.querySelectorAll(selector);
+      if (ctx.length > 1) {
+        const pass = await ComposeAlert(
+          `We've found ${ ctx.length } element that match the selection.
+          This may cause problems in model elements selection.
+          Do you want to continue?`, 'warning', true
+        );
+        if (pass.isDismissed) return false;
+      }
       context = main.querySelector(selector);
     } catch (err) {
       console.log(err);
-      return;
+      return false;
     }
-    if (!context) return;
+    if (!context) return false;
     this.train_context = context;
+    return true;
   }
 }

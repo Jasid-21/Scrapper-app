@@ -14,11 +14,12 @@
 </template>
 
 <script setup lang="ts">
+import { PairedModal } from '@/stores/interfaces/modalsState.interface';
 import { useModalsStore } from '@/stores/modals';
 import ModalName from '@/types/ModalName.type';
 import { computed, watch } from 'vue';
 
-const emit = defineEmits<{ (e: 'loaded'): void }>();
+const emit = defineEmits<{ (e: 'loaded', modal: PairedModal): void }>();
 const props = defineProps<{ modal: ModalName }>();
 
 const modalsStore = useModalsStore();
@@ -26,7 +27,7 @@ const modal = computed(() => modalsStore.paired_modals.find(m => m.modal == prop
 const full = computed(() => !modal.value?.slots.some(s => s === undefined));
 const active = computed(() => {
   const v = modal.value && full.value;
-  if (v) emit('loaded');
+  if (v) emit('loaded', modal.value);
   return v;
 });
 
