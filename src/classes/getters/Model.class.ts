@@ -21,8 +21,8 @@ export default class Model extends BaseGetter {
   raw_properties: RawProperty[] = [];
   train_context: Element | null = null;
 
-  constructor(name: string, properties: RawProperty[] = []) {
-    super(name, 'fa-solid fa-sitemap');
+  constructor(name: string, properties: RawProperty[] = [], isDefault: boolean = true) {
+    super(name, 'fa-solid fa-sitemap', isDefault);
 
     if (!properties.length) return;
     this.raw_properties = properties;

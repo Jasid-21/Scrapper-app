@@ -4,10 +4,12 @@ export default class BaseGetter {
   name: GetterName | string;
   context: Element | undefined = undefined;
   icon: string;
+  isDefault: boolean;
 
-  constructor(name: GetterName | string, icon: string) {
+  constructor(name: GetterName | string, icon: string, isDefault: boolean = true) {
     this.name = name;
     this.icon = icon;
+    this.isDefault = isDefault;
   }
 
   setContext(ctx: Element) {

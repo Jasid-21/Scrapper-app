@@ -68,7 +68,7 @@
           <button class="run-model-btn" @click="runModel">
             Run
           </button>
-          <button class="delete-model-b">Delete</button>
+          <button class="delete-model-b" @click="deleteModel">Delete</button>
         </div>
       </div>
     </template>
@@ -143,6 +143,11 @@ const runModel = () => {
   if (!ctx) return;
   const response = model.value.run([ctx]);
   console.log(response);
+}
+
+const deleteModel = () => {
+  if (!model.value) return;
+  modelsStore.deleteModels([model.value.name]);
 }
 </script>
 

@@ -8,6 +8,7 @@ import ImgGetter from "@/classes/getters/ImgGetter.class";
 import { ComposeAlert } from "@/services/FireAlert.service";
 import { useAdvicesStore } from "./advices";
 import SelectElements, { GetMainContext } from "@/services/SelectElements.service";
+import { useModalsStore } from "./modals";
 
 export const useModelsStore = defineStore('models', {
   state: (): ModelsState => ({
@@ -90,15 +91,30 @@ export const useModelsStore = defineStore('models', {
       useAdvicesStore().setMessage(msg);
     },
 
+    async deleteModels(names: string[]) {
+      const pass = await ComposeAlert('Are you sure you want to delete model?', 'warning', true);
+      if (pass.isDismissed) return;
+
+      console.log(this.models);
+      const mains = this.models.filter(m => m.isDefault);
+      if (mains.length) {
+        ComposeAlert(`Main models can't be deleted`, 'error');
+        return;
+      }
+      
+      this.models = this.models.filter(m => !names.includes(m.name));
+      useModalsStore().closeModals();
+    },
+
     async createModel(name: string, properties: RawProperty[] = []): Promise<Model | undefined> {
       const exist = this.models.findIndex(m => m.name == name);
       if (exist >= 0) {
         const pass = await ComposeAlert(
-          `There is a moden of name "". Do you want to overwrite it?`,
+          `There is a model of name "${name}". Do you want to overwrite it?`,
           'warning', true,
         );
         if (pass.isDismissed) return;
-        this.models[exist] = new Model(name, properties);
+        this.models[exist] = new Model(name, properties, false);
         return this.models[exist];
       }
 
