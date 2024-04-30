@@ -10,7 +10,7 @@ import { useWebsiteStore } from '@/stores/website';
 import { useModelsStore } from '@/stores/models';
 import { computed, nextTick, ref, watch } from 'vue';
 import ComposeSelector from '@/services/ComposeSelector.service';
-import { ComposeAlert } from '@/services/FireAlert.service';
+import { AddStyles, RemoveLinks } from '@/services/IframeStartTags.service';
 
 const website = useWebsiteStore();
 const modelsStore = useModelsStore();
@@ -32,20 +32,10 @@ watch(content, v => {
   nextTick(() => {
     if (!iframe.value) return;
     const context = iframe.value?.contentWindow?.document;
+    if (!context) return;
 
-    const style_tags = styles.value.map(s => {
-      const style = document.createElement('style');
-      style.innerHTML = s;
-      return style;
-    });
-    style_tags.forEach(s => context?.head.appendChild(s));
-    const sel_styles = document.createElement('style');
-    sel_styles.innerHTML = `
-      .xvx_focused {
-        box-shadow: 0 0 4px 2px purple !important;
-      }
-    `;
-    context?.body.appendChild(sel_styles);
+    AddStyles(context, styles.value);
+    //RemoveLinks(context);
 
     const els = context?.querySelectorAll('*');
     if (!els) return;

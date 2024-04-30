@@ -31,7 +31,6 @@ export const useWebsiteStore = defineStore('website', {
     },
 
     setWebsite(content: string, styles: string[]) {
-      //const style_tags = styles.map(s => `<style>${s}</style>`);
       this.setContent(content);
       this.setStyles(styles);
     },
