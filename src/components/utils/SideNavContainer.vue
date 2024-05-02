@@ -2,26 +2,18 @@
   <div class="sidenav-container">
     <ModelsSidenav :active="nav == 'models'" @close-navs="setActiveNav()">
     </ModelsSidenav>
-    <!--
-    <SideNavLayout :active="nav == 'tools'" @close-navs="setActiveNav()">
-      <template #header>
-        <span class="title">Tools</span>
-      </template>
-
-      <template #content></template>
-    </SideNavLayout>
-    -->
+    <ToolsSidenav :active="nav == 'tools'" @close-navs="setActiveNav()">
+    </ToolsSidenav>
 
     <div class="buttons-container" v-if="!nav">
       <button class="models-btn" @click="setActiveNav('models')">
         <fai icon="fa-solid fa-sitemap"></fai>
       </button>
-      <!--
+      
       <br>
       <button class="tools-btn" @click="setActiveNav('tools')">
         <fai icon="fa-solid fa-toolbox"></fai>
       </button>
-      -->
     </div>
   </div>
 </template>
@@ -30,6 +22,7 @@
 import { computed, ref } from 'vue';
 import { useModelsStore } from '@/stores/models';
 import ModelsSidenav from './ModelsSidenav.vue';
+import ToolsSidenav from './ToolsSidenav.vue';
 
 const modelsStore = useModelsStore();
 type NavName = 'models' | 'tools';

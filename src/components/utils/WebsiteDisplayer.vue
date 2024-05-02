@@ -9,11 +9,16 @@ import { useWebsiteStore } from '@/stores/website';
 import { useModelsStore } from '@/stores/models';
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import ComposeSelector from '@/services/ComposeSelector.service';
+import { ComposeAlert } from '@/services/FireAlert.service';
+import { useToolsStore } from '@/stores/tools';
 
 const website = useWebsiteStore();
 const modelsStore = useModelsStore();
-const training_model = computed(() => modelsStore.trainingModel);
 const training = computed(() => modelsStore.training);
+const training_model = computed(() => modelsStore.trainingModel);
+const tools = useToolsStore();
+const active_tool = computed(() => tools.active_tool);
+
 const content = computed(() => website.content);
 const clicked_el = computed(() => website.clicked_el);
 const iframe = ref<HTMLIFrameElement>();
@@ -26,16 +31,30 @@ watch(context, v => {
 }, { deep: true });
 
 watch(clicked_el, (el, old) => {
+  console.log(active_tool);
+  console.log(el);
   if (!el) return;
-  if (!training.value || !training_model.value) return;
-  const selector = ComposeSelector(el);
-  console.log(selector);
-  if (!training_model.value.train_context) {
-    modelsStore.setTrainingContext(selector);
+  if (training.value) {
+    if (!training_model.value) return;
+    const selector = ComposeSelector(el);
+    console.log(selector);
+    if (!training_model.value.train_context) {
+      modelsStore.setTrainingContext(selector);
+      return;
+    }
+    modelsStore.trainProerty(el);
     return;
   }
 
-  modelsStore.trainProerty(el);
+  if (active_tool.value == 'element-remover') {
+    ComposeAlert('Are you sure you want to delete this element?', 'warning', true)
+    .then((resp) => {
+      if (resp.isDismissed) return;
+      tools.removeElement();
+    })
+
+    return;
+  }
 });
 
 onMounted(() => {

@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import WebsiteState from "./interfaces/websiteState.interface";
 import FetchPage from "@/services/FetchPage.service";
+import ToolName from "@/types/ToolName.type";
 
 export const useWebsiteStore = defineStore('website', {
   state: (): WebsiteState => ({
@@ -11,6 +12,11 @@ export const useWebsiteStore = defineStore('website', {
   }),
 
   actions: {
+    removeElementFromIframe() {
+      if (!this.clicked_el) return;
+      this.clicked_el.remove();
+    },
+
     setClickedElement(el?: Element | null) {
       if (!el) {
         this.clicked_el = this.focused_el;

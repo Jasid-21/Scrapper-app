@@ -1,3 +1,5 @@
+import ToolName from "@/types/ToolName.type";
+
 export default interface WebsiteState {
   content: string;
   base_url: string;
