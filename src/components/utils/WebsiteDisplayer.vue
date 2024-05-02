@@ -63,6 +63,7 @@ watch(active_tool, (v, old) => {
 
 watch(clicked_el, (el, old) => {
   if (!el) return;
+  console.log("First pass");
   if (training.value) {
     if (!training_model.value) return;
     const selector = ComposeSelector(el);
@@ -71,7 +72,7 @@ watch(clicked_el, (el, old) => {
       return;
     }
     modelsStore.trainProerty(el);
-    website.setClickedElement();
+    website.setClickedElement(null);
     return;
   }
 
@@ -79,7 +80,7 @@ watch(clicked_el, (el, old) => {
     ComposeAlert('Are you sure you want to delete this element?', 'warning', true)
     .then((resp) => {
       if (!resp.isDismissed) tools.removeElement();
-      website.setClickedElement();
+      website.setClickedElement(null);
     });
     return;
   }
@@ -94,7 +95,7 @@ watch(clicked_el, (el, old) => {
     const links = el.querySelectorAll(link_selector) as NodeListOf<Element>;
     if (!links.length && !hrefs.length) {
       ComposeAlert('Links not found. Try selecting another container.');
-      website.setClickedElement();
+      website.setClickedElement(null);
       return;
     }
 
@@ -109,7 +110,7 @@ watch(clicked_el, (el, old) => {
     ComposeAlert(`Found ${hrefs.length} links. Do you want to download them?`, 'info', true)
     .then((resp) => {
       if (!resp.isDismissed) DownloadText('Links.txt', hrefs.join('\n'));
-      website.setClickedElement();
+      website.setClickedElement(null);
     });
     return;
   }
@@ -122,7 +123,7 @@ watch(clicked_el, (el, old) => {
     const links = el.querySelectorAll(img_selector) as NodeListOf<Element>;
     if (!links.length && !srcs.length) {
       ComposeAlert('Images with available source not found. Try selecting another container.');
-      website.setClickedElement();
+      website.setClickedElement(null);
       return;
     }
 
@@ -135,10 +136,13 @@ watch(clicked_el, (el, old) => {
     ComposeAlert(`Found ${srcs.length} images. Do you want to download them?`, 'info', true)
     .then((resp) => {
       if (!resp.isDismissed) srcs.forEach(src => DownloadImage(src));
-      website.setClickedElement();
+      website.setClickedElement(null);
     });
     return;
   }
+
+  console.log("It reachs");
+  website.setClickedElement(null);
 });
 
 onMounted(() => {
@@ -161,14 +165,15 @@ onMounted(() => {
           website.setClickedElement();
         });
 
-        let max_z = -1;
-        const dialogs = context.value.querySelectorAll('dialog');
-        dialogs.forEach(d => {
-          const zIndex = getComputedStyle(d).zIndex;
+        const z_indexes: number[] = [];
+        const els = context.value.querySelectorAll('*');
+        els.forEach(d => {
+          const zIndex = getComputedStyle(d).getPropertyValue('z-index');
           if (isNaN(Number(zIndex))) return;
-          if (Number(zIndex) > max_z) max_z = Number(zIndex);
+          z_indexes.push(Number(zIndex));
         });
-        wrapper.value.style.zIndex = max_z.toString();
+        const max = Math.max(...z_indexes, -1);
+        wrapper.value.style.zIndex = max.toString();
 
         context.value.addEventListener('mousemove', updateWrapper);
       });

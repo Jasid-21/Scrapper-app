@@ -18,7 +18,7 @@ export const useWebsiteStore = defineStore('website', {
     },
 
     setClickedElement(el?: Element | null) {
-      if (!el) {
+      if (el === undefined) {
         this.clicked_el = this.focused_el;
         return;
       }
