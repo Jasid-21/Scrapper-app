@@ -11,7 +11,9 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import ComposeSelector from '@/services/ComposeSelector.service';
 import { ComposeAlert } from '@/services/FireAlert.service';
 import { useToolsStore } from '@/stores/tools';
+import DownloadText from '@/services/DownloadText.service';
 
+const link_selector = process.env.VUE_APP_LINK_SELECTOR;
 const website = useWebsiteStore();
 const modelsStore = useModelsStore();
 const training = computed(() => modelsStore.training);
@@ -33,31 +35,29 @@ watch(context, v => {
 watch(active_tool, (v, old) => {
   console.log(v);
   if (old == 'links-finder') {
-    const links = context.value?.querySelectorAll('[href]');
+    const links = context.value?.querySelectorAll(link_selector);
     if (!links || !links.length) return;
     links.forEach(l => l.classList.remove('xvx_highlighted'));
   }
 
   if (v == 'links-finder') {
-    const links = context.value?.querySelectorAll('[href]');
+    const links = context.value?.querySelectorAll(link_selector);
     if (!links || !links.length) return;
     links.forEach(l => l.classList.add('xvx_highlighted'));
   }
 });
 
 watch(clicked_el, (el, old) => {
-  console.log(active_tool);
-  console.log(el);
   if (!el) return;
   if (training.value) {
     if (!training_model.value) return;
     const selector = ComposeSelector(el);
-    console.log(selector);
     if (!training_model.value.train_context) {
       modelsStore.setTrainingContext(selector);
       return;
     }
     modelsStore.trainProerty(el);
+    website.setClickedElement();
     return;
   }
 
@@ -66,26 +66,40 @@ watch(clicked_el, (el, old) => {
     .then((resp) => {
       if (resp.isDismissed) return;
       tools.removeElement();
-    })
+    });
+    website.setClickedElement();
 
     return;
   }
 
   if (active_tool.value == 'links-finder') {
-    const links = el.querySelectorAll('[href]:not(link)');
-    if (!links.length) {
-      ComposeAlert('Links not found');
+    const hrefs: string[] = [];
+    const el_href = el.getAttribute('href');
+    const el_src = el.getAttribute('src');
+    if (el_href) hrefs.push(el_href);
+    if (el_src) hrefs.push(el_src);
+
+    const links = el.querySelectorAll(link_selector) as NodeListOf<Element>;
+    if (!links.length && !hrefs.length) {
+      ComposeAlert('Links not found. Try selecting another container.');
+      website.setClickedElement();
       return;
     }
 
-    const hrefs: string[] = [];
     links.forEach(l => {
       const href = l.getAttribute('href');
-      if (!href) return;
-      hrefs.push(href);
+      const src = l.getAttribute('src');
+      if (href) hrefs.push(href);
+      if (src) hrefs.push(src);
     });
     console.log(hrefs);
 
+    ComposeAlert(`Found ${hrefs.length} links. Do you want to download them?`, 'info', true)
+    .then((resp) => {
+      if (resp.isDismissed) return;
+      DownloadText('Links.txt', hrefs.join('\n'));
+    });
+    website.setClickedElement();
     return;
   }
 });

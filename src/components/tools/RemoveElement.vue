@@ -1,18 +1,17 @@
 <template>
-  <SidenavItem :icon="'fa-solid fa-circle-minus'" name="Remover"
+  <SidenavItem :icon="'fa-solid fa-circle-minus'" name="Remover" :active="active"
     @clicked="setActiveTool">
   </SidenavItem>
 </template>
 
 <script setup lang="ts">
 import SidenavItem from '../SidenavItem.vue';
-import { useToolsStore } from '@/stores/tools';
+import { useTool } from '@/composbles/Tool';
 
-const tools = useToolsStore();
-const setActiveTool = () => {
-  tools.setActiveTool('element-remover');
-  console.log("Remover active");
-}
+const {
+  active,
+  setActiveTool
+} = useTool('element-remover');
 </script>
 
 <style scoped lang="scss">

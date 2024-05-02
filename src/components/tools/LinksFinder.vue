@@ -1,5 +1,6 @@
 <template>
-  <SidenavItem name="Links" icon="fa-solid fa-link" @clicked="setActiveTool">
+  <SidenavItem name="Links" icon="fa-solid fa-link" :active="active"
+    @clicked="setActiveTool">
   </SidenavItem>
 </template>
 
@@ -7,7 +8,10 @@
 import SidenavItem from '../SidenavItem.vue';
 import { useTool } from '@/composbles/Tool';
 
-const { setActiveTool } = useTool('links-finder');
+const {
+  active,
+  setActiveTool
+} = useTool('links-finder');
 </script>
 
 <style scoped lang="scss">

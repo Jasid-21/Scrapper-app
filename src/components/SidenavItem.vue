@@ -1,5 +1,5 @@
 <template>
-  <div class="sidenav-item" @click="emit('clicked')">
+  <div class="sidenav-item" :class="{ active }" @click="emit('clicked')">
     <span class="title">{{ name }}</span>
     <fai :icon="icon"></fai>
   </div>
@@ -10,6 +10,7 @@ const emit = defineEmits<{ (e: 'clicked'): void }>();
 const props = defineProps<{
   name: string;
   icon: string;
+  active?: boolean;
 }>();
 </script>
 
@@ -33,8 +34,8 @@ const props = defineProps<{
   transition-duration: 180ms;
   cursor: pointer;
 
-  &:hover {
-    background-color: $primary;
+  &.active, &:hover {
+    background-color: $d_accent;
     color: #fff;
   }
 
