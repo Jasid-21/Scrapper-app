@@ -6,14 +6,21 @@ export const useWebsiteStore = defineStore('website', {
   state: (): WebsiteState => ({
     base_url: '',
     content: '',
-    styles: [],
-    iframe_document: undefined,
+    focused_el: null,
+    clicked_el: null,
   }),
 
   actions: {
-    setIframeDoc(document: Document) {
-      if (!(document instanceof Document)) return;
-      this.iframe_document = document;
+    setClickedElement(el?: Element | null) {
+      if (!el) {
+        this.clicked_el = this.focused_el;
+        return;
+      }
+      this.clicked_el = el;
+    },
+
+    setFocusedElement(el: Element | null) {
+      this.focused_el = el;
     },
 
     setContent(content: string) {
@@ -21,18 +28,8 @@ export const useWebsiteStore = defineStore('website', {
       this.content = content;
     },
 
-    setStyles(styles: string[], add: boolean = false) {
-      if (styles.some(s => typeof s != 'string')) return;
-      if (add) {
-        this.styles.push(...styles);
-        return;
-      }
-      this.styles = styles;
-    },
-
     setWebsite(content: string, styles: string[]) {
       this.setContent(content);
-      this.setStyles(styles);
     },
 
     fetchPage(url: string) {

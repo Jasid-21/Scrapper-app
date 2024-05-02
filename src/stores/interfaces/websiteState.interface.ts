@@ -1,6 +1,6 @@
 export default interface WebsiteState {
   content: string;
-  styles: string[];
   base_url: string;
-  iframe_document: Document | undefined;
+  focused_el: Element | null;
+  clicked_el: Element | null;
 }

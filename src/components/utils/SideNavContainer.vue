@@ -28,25 +28,14 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import SideNavLayout from './SideNavLayout.vue';
-import SidenavItem from '../SidenavItem.vue';
 import { useModelsStore } from '@/stores/models';
-import { useModalsStore } from '@/stores/modals';
-import CreateModel from '../tools/CreateModel.vue';
 import ModelsSidenav from './ModelsSidenav.vue';
 
 const modelsStore = useModelsStore();
-const modalsStore = useModalsStore();
-const models = computed(() => modelsStore.models);
 type NavName = 'models' | 'tools';
 const nav = ref<NavName | undefined>(undefined);
 
 const setActiveNav = (v?: NavName) => nav.value = v;
-const openModelModal = (name: string) => {
-  const model = models.value.find(m => m.name == name);
-  if (!model) return;
-  modalsStore.addPairedModal('inspect-model', [model]);
-}
 </script>
 
 <style scoped lang="scss">
@@ -58,8 +47,8 @@ const openModelModal = (name: string) => {
 
   button {
     @include button-style($primary);
-    width: 30px;
-    padding: 0.2rem;
+    padding: 0.3rem 0.5rem;
+    font-size: 1rem;
   }
 }
 </style>

@@ -1,6 +1,7 @@
 @import './variables';
 
-@mixin button-style($color: $primary) {
+@mixin button-style($color: $primary, $hv-color: none) {
+  $hv-color: if($hv-color != none, $hv-color, $color);
   background-color: transparent;
   color: $color;
   border-radius: 4px;
@@ -14,7 +15,7 @@
   align-items: center;
 
   &:hover {
-    background-color: $color;
+    background-color: $hv-color;
     color: #fff;
   }
 }

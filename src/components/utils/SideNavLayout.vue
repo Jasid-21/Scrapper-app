@@ -26,13 +26,13 @@ $nav-width: 150px;
   top: 0; left: 0;
   height: 100vh;
   width: $nav-width;
-  background-color: rgba($color: $primary, $alpha: 0.5);
+  background-color: rgba($color: $primary, $alpha: 0.7);
   box-shadow: 2px 0 4px $d_accent;
   padding: 0.4rem;
 
   .header {
     text-align: center;
-    color: $d_accent;
+    color: #fff;
     font-weight: 700;
     border-bottom: 1px solid $accent;
   }

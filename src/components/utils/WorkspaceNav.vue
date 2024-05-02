@@ -28,10 +28,10 @@ const fetchPage = () => {
   position: fixed;
   top: 0; left: 0; right: 0;
   height: 50px;
-  background-color: rgba($color: $primary, $alpha: 0.5);
+  background-color: rgba($color: $primary, $alpha: 0.7);
   padding: 0.5rem;
 
-  color: $text;
+  color: #fff;
   font-size: 0.9rem;
   font-weight: 700;
 
@@ -53,7 +53,7 @@ const fetchPage = () => {
   }
 
   button {
-    @include button-style();
+    @include button-style(#fff, #00b);
   }
 }
 </style>

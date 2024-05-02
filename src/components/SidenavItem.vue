@@ -19,10 +19,10 @@ const props = defineProps<{
 .sidenav-item {
   width: 50px;
   height: 50px;
-  border: 2px solid $d_accent;
+  border: 2px solid #fff;
   border-radius: 8px;
   position: relative;
-  color: $d_accent;
+  color: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
