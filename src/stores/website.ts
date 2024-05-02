@@ -48,6 +48,7 @@ export const useWebsiteStore = defineStore('website', {
     },
 
     setBaseUrl(url: string) {
+      url = 'https://licoresmedellin.com';
       const url_array = url.split('/').splice(0, 3);
       this.base_url = url_array.join('/');
     }

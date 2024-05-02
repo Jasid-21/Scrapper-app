@@ -5,8 +5,6 @@ export default function DownloadText(filename: string, text: string) {
 
   element.style.display = 'none';
   document.body.appendChild(element);
-
   element.click();
-
   document.body.removeChild(element);
 }

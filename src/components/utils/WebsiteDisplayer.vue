@@ -12,8 +12,10 @@ import ComposeSelector from '@/services/ComposeSelector.service';
 import { ComposeAlert } from '@/services/FireAlert.service';
 import { useToolsStore } from '@/stores/tools';
 import DownloadText from '@/services/DownloadText.service';
+import DownloadImage from '@/services/DownloadImage.service';
 
 const link_selector = process.env.VUE_APP_LINK_SELECTOR;
+const img_selector = process.env.VUE_APP_IMG_SELECTOR;
 const website = useWebsiteStore();
 const modelsStore = useModelsStore();
 const training = computed(() => modelsStore.training);
@@ -45,6 +47,18 @@ watch(active_tool, (v, old) => {
     if (!links || !links.length) return;
     links.forEach(l => l.classList.add('xvx_highlighted'));
   }
+
+  if (old == 'images-finder') {
+    const links = context.value?.querySelectorAll(img_selector);
+    if (!links || !links.length) return;
+    links.forEach(l => l.classList.remove('xvx_highlighted'));
+  }
+
+  if (v == 'images-finder') {
+    const links = context.value?.querySelectorAll(img_selector);
+    if (!links || !links.length) return;
+    links.forEach(l => l.classList.add('xvx_highlighted'));
+  }
 });
 
 watch(clicked_el, (el, old) => {
@@ -64,11 +78,9 @@ watch(clicked_el, (el, old) => {
   if (active_tool.value == 'element-remover') {
     ComposeAlert('Are you sure you want to delete this element?', 'warning', true)
     .then((resp) => {
-      if (resp.isDismissed) return;
-      tools.removeElement();
+      if (!resp.isDismissed) tools.removeElement();
+      website.setClickedElement();
     });
-    website.setClickedElement();
-
     return;
   }
 
@@ -96,10 +108,35 @@ watch(clicked_el, (el, old) => {
 
     ComposeAlert(`Found ${hrefs.length} links. Do you want to download them?`, 'info', true)
     .then((resp) => {
-      if (resp.isDismissed) return;
-      DownloadText('Links.txt', hrefs.join('\n'));
+      if (!resp.isDismissed) DownloadText('Links.txt', hrefs.join('\n'));
+      website.setClickedElement();
     });
-    website.setClickedElement();
+    return;
+  }
+
+  if (active_tool.value == 'images-finder') {
+    const srcs: string[] = [];
+    const el_src = el.getAttribute('src');
+    if (el_src) srcs.push(el_src);
+
+    const links = el.querySelectorAll(img_selector) as NodeListOf<Element>;
+    if (!links.length && !srcs.length) {
+      ComposeAlert('Images with available source not found. Try selecting another container.');
+      website.setClickedElement();
+      return;
+    }
+
+    links.forEach(l => {
+      const src = l.getAttribute('src');
+      if (src) srcs.push(src);
+    });
+    console.log(srcs);
+
+    ComposeAlert(`Found ${srcs.length} images. Do you want to download them?`, 'info', true)
+    .then((resp) => {
+      if (!resp.isDismissed) srcs.forEach(src => DownloadImage(src));
+      website.setClickedElement();
+    });
     return;
   }
 });
