@@ -30,6 +30,21 @@ watch(context, v => {
   wrapper.value = w;
 }, { deep: true });
 
+watch(active_tool, (v, old) => {
+  console.log(v);
+  if (old == 'links-finder') {
+    const links = context.value?.querySelectorAll('[href]');
+    if (!links || !links.length) return;
+    links.forEach(l => l.classList.remove('xvx_highlighted'));
+  }
+
+  if (v == 'links-finder') {
+    const links = context.value?.querySelectorAll('[href]');
+    if (!links || !links.length) return;
+    links.forEach(l => l.classList.add('xvx_highlighted'));
+  }
+});
+
 watch(clicked_el, (el, old) => {
   console.log(active_tool);
   console.log(el);
@@ -52,6 +67,24 @@ watch(clicked_el, (el, old) => {
       if (resp.isDismissed) return;
       tools.removeElement();
     })
+
+    return;
+  }
+
+  if (active_tool.value == 'links-finder') {
+    const links = el.querySelectorAll('[href]:not(link)');
+    if (!links.length) {
+      ComposeAlert('Links not found');
+      return;
+    }
+
+    const hrefs: string[] = [];
+    links.forEach(l => {
+      const href = l.getAttribute('href');
+      if (!href) return;
+      hrefs.push(href);
+    });
+    console.log(hrefs);
 
     return;
   }

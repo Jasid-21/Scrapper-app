@@ -5,6 +5,7 @@ import router from './router'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import {
+  faCircleMinus,
   faClose,
   faCopy,
   faFont,
@@ -19,7 +20,7 @@ import {
 import { faClipboard } from '@fortawesome/free-regular-svg-icons'
 
 library.add(faToolbox, faClose, faSave, faTrashCan, faCopy, faClipboard);
-library.add(faSitemap, faLink, faImage, faFont, faPlus);
+library.add(faSitemap, faLink, faImage, faFont, faPlus, faCircleMinus);
 
 const pinia = createPinia();
 const app = createApp(App);

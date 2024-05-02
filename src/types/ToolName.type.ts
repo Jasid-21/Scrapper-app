@@ -1,2 +1,2 @@
-type ToolName = 'element-remover';
+type ToolName = 'element-remover' | 'links-finder';
 export default ToolName;

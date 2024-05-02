@@ -6,12 +6,14 @@
 
       <template #content>
         <RemoveElement></RemoveElement>
+        <LinksFinder></LinksFinder>
       </template>
   </SideNavLayout>
 </template>
 
 <script setup lang="ts">
 import RemoveElement from '../tools/RemoveElement.vue';
+import LinksFinder from '../tools/LinksFinder.vue';
 import SideNavLayout from './SideNavLayout.vue';
 
 const emit = defineEmits<{ (e: 'closeNavs'): void }>();

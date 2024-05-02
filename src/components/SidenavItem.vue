@@ -40,7 +40,7 @@ const props = defineProps<{
 
   .title {
     font-weight: 700;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     position: absolute;
     top: 0; left: 50%;
     translate: -50% 0;

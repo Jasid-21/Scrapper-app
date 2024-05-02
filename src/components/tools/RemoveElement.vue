@@ -1,5 +1,5 @@
 <template>
-  <SidenavItem :icon="'fa-solid fa-sitemap'" name="Remover"
+  <SidenavItem :icon="'fa-solid fa-circle-minus'" name="Remover"
     @clicked="setActiveTool">
   </SidenavItem>
 </template>
@@ -16,5 +16,4 @@ const setActiveTool = () => {
 </script>
 
 <style scoped lang="scss">
-
 </style>
