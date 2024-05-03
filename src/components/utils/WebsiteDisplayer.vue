@@ -219,6 +219,8 @@ watch(content, v => {
 iframe.website-displayer {
   width: 100vw;
   height: 100vh;
+  max-width: 100%;
+  max-height: 100vh;
 }
 
 .iframe-mask {

@@ -2,14 +2,15 @@ export default async function FetchPage(url: string)
   : Promise<{ styles: string[], content: string }> {
 
   console.log("fetching...");
+  const user_id = '';
   const base_url: string = process.env.VUE_APP_API_URL || '';
 
   const resp = await fetch(base_url + '/workspace/newPage', {
     method: 'POST',
-    body: JSON.stringify({
-      user_id: '',
-      url: '',
-    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ user_id, url }),
   });
 
   const ok = resp.ok;

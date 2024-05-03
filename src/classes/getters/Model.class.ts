@@ -71,6 +71,15 @@ export default class Model extends BaseGetter {
     return ctxs.map(ctx => this.getContent(ctx));
   }
 
+  removeTraining(props: string[] = []) {
+    if (!props.length) props = this.raw_properties.map(p => p.name);
+    props.forEach(p => {
+      const prop = this.raw_properties.find(r => r.name == p);
+      if (!prop) return;
+      prop.selector = undefined;
+    });
+  }
+
   async trainProperty(name: string, el: Element): Promise<boolean> {
     if (!this.train_context) {
       ComposeAlert('Invalid training context');

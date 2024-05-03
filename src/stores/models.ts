@@ -96,7 +96,8 @@ export const useModelsStore = defineStore('models', {
       if (pass.isDismissed) return;
 
       console.log(this.models);
-      const mains = this.models.filter(m => m.isDefault);
+      const mains = names.filter(n => this.models.find(m => m.name == n)?.isDefault);
+      console.log(mains);
       if (mains.length) {
         ComposeAlert(`Main models can't be deleted`, 'error');
         return;
@@ -118,7 +119,7 @@ export const useModelsStore = defineStore('models', {
         return this.models[exist];
       }
 
-      const model = new Model(name, properties);
+      const model = new Model(name, properties, false);
       this.models.push(model);
       return model;
     },

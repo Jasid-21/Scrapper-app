@@ -41,6 +41,10 @@
                 <button class="remove-btn" @click="removeElement(e.name)">
                   <fai icon="fa-solid fa-trash-can"></fai>
                 </button>
+
+                <button class="remove-btn" @click="trainProperty(e.name)">
+                  <fai icon="fa-solid fa-person-running"></fai>
+                </button>
               </td>
             </tr>
           </table>
@@ -87,6 +91,7 @@ import { ComposeAlert } from '@/services/FireAlert.service';
 import { GetMainContext } from '@/services/SelectElements.service';
 import Model from '@/classes/getters/Model.class';
 import GetterName from '@/types/GetterName.type';
+import DownloadText from '@/services/DownloadText.service';
 
 const modalsStore = useModalsStore();
 const modal = ref<PairedModal | undefined>();
@@ -136,13 +141,34 @@ const startTraining = () => {
   modalsStore.closeModals();
 }
 
-const runModel = () => {
+const trainProperty = (name: string) => {
+  if (!model.value) return;
+  model.value.removeTraining([name]);
+  startTraining();
+}
+
+const runModel = async () => {
   if (!model.value) return;
   if (!model.value.trained) return;
   const ctx = GetMainContext()?.querySelector('body');
   if (!ctx) return;
   const response = model.value.run([ctx]);
-  console.log(response);
+  let text: string = '';
+  try {
+    text = JSON.stringify(response);
+  } catch (err) {
+    console.log(err);
+    ComposeAlert('Error downloading info', 'error');
+    return;
+  }
+
+  const download = await ComposeAlert(
+    'Your info is ready. Do you want to download it?',
+    'question', true
+  );
+
+  if (download.isDismissed) return;
+  DownloadText(model.value.name + '.json', text);
 }
 
 const deleteModel = () => {
@@ -215,15 +241,21 @@ const deleteModel = () => {
       margin-bottom: 0.3rem;
 
       display: grid;
-      grid-template-columns: 45% 45% 10%;
+      grid-template-columns: 40% 40% 20%;
       align-items: baseline;
 
       td {
         text-align: center;
       }
 
-      .remove-btn {
-        @include button-style();
+      .options {
+        display: flex;
+
+        .remove-btn {
+          @include button-style();
+          border: none;
+          padding: 0.2rem;
+        }
       }
     }
   }

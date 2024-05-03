@@ -11,6 +11,7 @@ import {
   faFont,
   faImage,
   faLink,
+  faPersonRunning,
   faPlus,
   faSave,
   faSitemap,
@@ -19,7 +20,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { faClipboard } from '@fortawesome/free-regular-svg-icons'
 
-library.add(faToolbox, faClose, faSave, faTrashCan, faCopy, faClipboard);
+library.add(faToolbox, faClose, faSave, faTrashCan, faCopy, faClipboard, faPersonRunning);
 library.add(faSitemap, faLink, faImage, faFont, faPlus, faCircleMinus);
 
 const pinia = createPinia();
