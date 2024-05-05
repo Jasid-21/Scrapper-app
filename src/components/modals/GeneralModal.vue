@@ -65,6 +65,8 @@ const closeModal = () => {
     text-align: center;
     margin-bottom: 0.4rem;
     border-bottom: 2px solid $primary;
+    font-weight: 700;
+    color: $d_accent;
   }
 }
 </style>

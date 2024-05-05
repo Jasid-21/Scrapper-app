@@ -69,7 +69,7 @@
           <button class="start-training-btn" @click="startTraining">
             Start training
           </button>
-          <button class="run-model-btn" @click="runModel">
+          <button class="run-model-btn" @click="runModel" v-if="model?.isDefault">
             Run
           </button>
           <button class="delete-model-b" @click="deleteModel">Delete</button>
@@ -89,7 +89,6 @@ import { useWebsiteStore } from '@/stores/website';
 import { PairedModal } from '@/stores/interfaces/modalsState.interface';
 import { ComposeAlert } from '@/services/FireAlert.service';
 import { GetMainContext } from '@/services/SelectElements.service';
-import Model from '@/classes/getters/Model.class';
 import GetterName from '@/types/GetterName.type';
 import DownloadText from '@/services/DownloadText.service';
 
@@ -150,6 +149,13 @@ const trainProperty = (name: string) => {
 const runModel = async () => {
   if (!model.value) return;
   if (!model.value.trained) return;
+
+  const untrained = modelsStore.checkTraining(model.value.name);
+  if (untrained) {
+    ComposeAlert("There are some untrained models yet.");
+    return;
+  }
+
   const ctx = GetMainContext()?.querySelector('body');
   if (!ctx) return;
   const response = model.value.run([ctx]);

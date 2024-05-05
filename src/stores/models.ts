@@ -46,6 +46,23 @@ export const useModelsStore = defineStore('models', {
   },
 
   actions: {
+    checkTraining(name: string): number {
+      const model = this.models.find(m => m.name == name);
+      if (!model) return 1;
+
+      const models_names = this.models.map(m => m.name);
+      const model_children = model.raw_properties.filter(r => models_names.includes(r.getter));
+
+      const untrained = model_children.map(m => this.checkTraining(m.getter));
+      let count = untrained.reduce((c, n) => c + n , 0);
+      console.log(count);
+      
+      const isTrained = !model.raw_properties.some(p => !p.selector);
+      if (!isTrained) count++;
+
+      return count;
+    },
+
     async trainProerty(el: Element) {
       if (!this.training) return;
       const model = this.trainingModel;
