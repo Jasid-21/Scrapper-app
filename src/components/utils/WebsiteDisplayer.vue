@@ -2,22 +2,27 @@
   <iframe ref="iframe" id="website-displayer"class="website-displayer"
     frameborder="0">
   </iframe>
+
+  <div class="loading-div" v-if="loading">
+    <Loading></Loading>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { useWebsiteStore } from '@/stores/website';
 import { useModelsStore } from '@/stores/models';
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
-import ComposeSelector from '@/services/ComposeSelector.service';
 import { ComposeAlert } from '@/services/FireAlert.service';
 import { useToolsStore } from '@/stores/tools';
 import DownloadText from '@/services/DownloadText.service';
 import DownloadImage from '@/services/DownloadImage.service';
+import Loading from '../Loading.vue';
 
 const link_selector = process.env.VUE_APP_LINK_SELECTOR;
 const img_selector = process.env.VUE_APP_IMG_SELECTOR;
 const website = useWebsiteStore();
 const modelsStore = useModelsStore();
+const loading = computed(() => website.loading);
 const training = computed(() => modelsStore.training);
 const training_model = computed(() => modelsStore.trainingModel);
 const tools = useToolsStore();
@@ -138,7 +143,6 @@ watch(clicked_el, (el, old) => {
     return;
   }
 
-  console.log("It reachs");
   website.setClickedElement(null);
 });
 
@@ -221,10 +225,10 @@ iframe.website-displayer {
   max-height: 100vh;
 }
 
-.iframe-mask {
+.loading-div {
   position: absolute;
-  top: 0; left: 0;
-  width: 100vw;
-  height: 100vh;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
 }
 </style>

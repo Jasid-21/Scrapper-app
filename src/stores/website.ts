@@ -10,6 +10,7 @@ export const useWebsiteStore = defineStore('website', {
     focused_el: null,
     clicked_el: null,
     context: null,
+    loading: false,
   }),
 
   actions: {
@@ -45,10 +46,12 @@ export const useWebsiteStore = defineStore('website', {
 
     fetchPage(url: string) {
       if (typeof url != 'string') return;
+      this.loading = true;
 
       FetchPage(url).then(({ content, styles }) => {
         this.setWebsite(content, styles);
         this.setBaseUrl(url);
+        this.loading = false;
       }).catch(err => console.log(err));
     },
 

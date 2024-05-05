@@ -6,4 +6,5 @@ export default interface WebsiteState {
   focused_el: Element | null;
   clicked_el: Element | null;
   context: Document | null;
+  loading: boolean;
 }
