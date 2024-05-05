@@ -18,7 +18,7 @@
             <div>
               <select v-model="chosen_getter">
                 <option :value="default_getter">Choose a getter</option>
-                <option v-for="s of getters" :value="s">
+                <option v-for="s of getters.filter(g => g != model?.name)" :value="s">
                   {{ s }}
                 </option>
               </select>
