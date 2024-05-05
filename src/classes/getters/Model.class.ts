@@ -121,4 +121,8 @@ export default class Model extends BaseGetter {
     this.train_context = element;
     return true;
   }
+
+  resetTraining() {
+    this.raw_properties.forEach(p => p.selector = undefined);
+  }
 }

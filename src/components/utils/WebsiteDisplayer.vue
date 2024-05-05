@@ -63,15 +63,12 @@ watch(active_tool, (v, old) => {
 
 watch(clicked_el, (el, old) => {
   if (!el) return;
-  console.log("First pass");
   if (training.value) {
-    if (!training_model.value) return;
-    const selector = ComposeSelector(el);
-    if (!training_model.value.train_context) {
+    if (!training_model.value?.train_context) {
       modelsStore.setTrainingContext(el);
       return;
     }
-    modelsStore.trainProerty(el);
+    modelsStore.trainProperty(el);
     website.setClickedElement(null);
     return;
   }

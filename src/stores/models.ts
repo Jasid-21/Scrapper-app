@@ -63,7 +63,20 @@ export const useModelsStore = defineStore('models', {
       return count;
     },
 
-    async trainProerty(el: Element) {
+    async resetTraining(model: Model | string) {
+      if (typeof model == 'string') {
+        const m = this.models.find(m => m.name == model) as Model | undefined;
+        if (!m) return;
+        model = m;
+      }
+
+      const pass = await ComposeAlert('Are you sure you want to reset training?', 'warning', true);
+      if (pass.isDismissed) return;
+      
+      model.resetTraining();
+    },
+
+    async trainProperty(el: Element) {
       if (!this.training) return;
       const model = this.trainingModel;
       if (!model) return;

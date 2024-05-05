@@ -67,11 +67,12 @@
 
         <div class="buttons-container">
           <button class="start-training-btn" @click="startTraining">
-            Start training
+            Train
           </button>
           <button class="run-model-btn" @click="runModel" v-if="model?.isDefault">
             Run
           </button>
+          <button class="reset-btn" @click="resetTraining">Reset</button>
           <button class="delete-model-b" @click="deleteModel">Delete</button>
         </div>
       </div>
@@ -180,6 +181,11 @@ const runModel = async () => {
 const deleteModel = () => {
   if (!model.value) return;
   modelsStore.deleteModels([model.value.name]);
+}
+
+const resetTraining = () => {
+  if (!model.value) return;
+  modelsStore.resetTraining(model.value);
 }
 </script>
 
