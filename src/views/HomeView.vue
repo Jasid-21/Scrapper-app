@@ -6,6 +6,7 @@
       <WorkspaceNav></WorkspaceNav>
       <SideNavContainer></SideNavContainer>
       <AdviceDisplayer></AdviceDisplayer>
+      <AllDocumentBtn></AllDocumentBtn>
     </Teleport>
 
     <Teleport to="#modals">
@@ -20,6 +21,7 @@ import WorkspaceNav from '@/components/utils/WorkspaceNav.vue';
 import SideNavContainer from '@/components/utils/SideNavContainer.vue';
 import ModalsDisplayer from '@/components/modals/ModalsDisplayer.vue';
 import AdviceDisplayer from '@/components/utils/AdviceDisplayer.vue';
+import AllDocumentBtn from '@/components/utils/AllDocumentBtn.vue';
 </script>
 
 <style scoped lang="scss">

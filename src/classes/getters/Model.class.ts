@@ -98,7 +98,7 @@ export default class Model extends BaseGetter {
     if (els.length > 1) {
       const mult = await ComposeAlert(
         `We've found ${els.length} elements. If you click "ok" you'll keep them all.
-        Otherwise only the first will be selected`,
+        Otherwise only the first will be selected`, 
         'info', true
       );
       if (mult.isConfirmed) multiple = true;
@@ -112,32 +112,13 @@ export default class Model extends BaseGetter {
     return true;
   }
 
-  async setTrainingContext(selector: string): Promise<boolean> {
-    if (!selector) {
+  async setTrainingContext(element?: Element): Promise<boolean> {
+    if (!element) {
       this.train_context = null;
-      return false;
+      return true;
     }
 
-    const main = GetMainContext();
-    if (!main) return false;
-    let context: Element | null = null;
-    try {
-      const ctx  = main.querySelectorAll(selector);
-      if (ctx.length > 1) {
-        const pass = await ComposeAlert(
-          `We've found ${ ctx.length } element that match the selection.
-          This may cause problems in model elements selection.
-          Do you want to continue?`, 'warning', true
-        );
-        if (pass.isDismissed) return false;
-      }
-      context = main.querySelector(selector);
-    } catch (err) {
-      console.log(err);
-      return false;
-    }
-    if (!context) return false;
-    this.train_context = context;
+    this.train_context = element;
     return true;
   }
 }

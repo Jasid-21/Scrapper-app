@@ -68,7 +68,7 @@ watch(clicked_el, (el, old) => {
     if (!training_model.value) return;
     const selector = ComposeSelector(el);
     if (!training_model.value.train_context) {
-      modelsStore.setTrainingContext(selector);
+      modelsStore.setTrainingContext(el);
       return;
     }
     modelsStore.trainProerty(el);
@@ -155,6 +155,7 @@ onMounted(() => {
     if (ev.data == 'loaded') {
       const ctx = iframe.value?.contentWindow?.document;
       context.value = ctx;
+      website.setContext(ctx || null);
 
       nextTick(() => {
         if (!context.value) return;

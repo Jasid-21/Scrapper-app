@@ -5,4 +5,5 @@ export default interface WebsiteState {
   base_url: string;
   focused_el: Element | null;
   clicked_el: Element | null;
+  context: Document | null;
 }

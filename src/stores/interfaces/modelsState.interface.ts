@@ -5,5 +5,6 @@ import ModelTraining from "@/interfaces/ModelTraining.interface";
 export default interface ModelsState {
   default_getters: BaseGetter[];
   models: Model[];
-  training: string | undefined;
+  training: Model | undefined;
+  training_queue: Model[];
 }

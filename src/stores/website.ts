@@ -9,9 +9,14 @@ export const useWebsiteStore = defineStore('website', {
     content: '',
     focused_el: null,
     clicked_el: null,
+    context: null,
   }),
 
   actions: {
+    setContext(context: Document | null) {
+      this.context = context;
+    },
+
     removeElementFromIframe() {
       if (!this.clicked_el) return;
       this.clicked_el.remove();

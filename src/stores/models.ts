@@ -23,11 +23,12 @@ export const useModelsStore = defineStore('models', {
     ],
 
     training: undefined,
+    training_queue: [],
   }),
 
   getters: {
     trainingModel(): Model | undefined {
-      return this.models.find(m => m.name === this.training);
+      return this.training;
     },
 
     trainingProperty(): string | undefined {
@@ -59,7 +60,7 @@ export const useModelsStore = defineStore('models', {
       if (!next) {
         ComposeAlert('Model trained', 'success');
         useAdvicesStore().closeAdvice();
-        this.trainingModel?.setTrainingContext('');
+        this.trainingModel?.setTrainingContext();
         this.training = undefined;
         return;
       }
@@ -67,9 +68,8 @@ export const useModelsStore = defineStore('models', {
       useAdvicesStore().setMessage(msg);
     },
 
-    async setTrainingContext(selector: string) {
-      const pass = await this.trainingModel?.setTrainingContext(selector);
-      if (!pass) return;
+    async setTrainingContext(element: Element) {
+      await this.trainingModel?.setTrainingContext(element);
       const next = this.trainingModel?.nextProperty;
       if (!next) return;
       
@@ -86,7 +86,7 @@ export const useModelsStore = defineStore('models', {
 
       const next = model.nextProperty;
       if (!next) return;
-      this.training = model.name;
+      this.training = model;
       const msg = `Click element to define context`;
       useAdvicesStore().setMessage(msg);
     },
